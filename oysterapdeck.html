@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<title>Guía de uso — Pagos con Oyster AP desde NetSuite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  /* TT Firs Neue not licensed here — Inter is the design-system fallback */
+  :root{ --font-display:"Inter", system-ui, sans-serif; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#3a4654; }
+  body{ font-family:var(--font-body); -webkit-font-smoothing:antialiased; }
+
+  .slide{
+    position:relative; width:1280px; height:720px; margin:0 auto 26px;
+    overflow:hidden; background:var(--hero-navy); color:#F7F9FB;
+  }
+  .slide:last-child{ margin-bottom:0; }
+
+  /* ---- shared chrome ---- */
+  .bar{ position:absolute; top:0; left:0; right:0; height:5px; background:rgba(0,27,91,.10); z-index:5; }
+  .bar.dark{ background:rgba(255,255,255,.12); }
+  .bar::after{ content:""; position:absolute; left:0; top:0; bottom:0; width:var(--p,30%); background:var(--blue); }
+  .logo{ position:absolute; top:40px; left:64px; height:42px; z-index:5; }
+  .logo img{ height:100%; display:block; }
+  .foot{ position:absolute; bottom:30px; left:64px; right:64px; display:flex; justify-content:space-between;
+    align-items:center; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; }
+  .foot.dark{ color:rgba(255,255,255,.34); }
+  .foot.light{ color:rgba(89,102,112,.55); }
+
+  .ey{ font-size:12px; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:var(--cyan); margin-bottom:14px; }
+  .body{ position:absolute; top:118px; left:64px; right:64px; bottom:74px; }
+
+  /* ---- LIGHT slide variant ---- */
+  .slide.light{ background:var(--off-white); color:var(--navy); }
+  .slide.light .h2{ font-family:var(--font-display); font-size:38px; font-weight:700; letter-spacing:-.025em; color:var(--navy); margin:0; line-height:1.08; }
+  .slide.light .h2 .ac{ color:var(--blue); }
+  .slide.light .lede{ font-size:16.5px; line-height:1.5; color:var(--muted); margin-top:14px; max-width:1000px; }
+
+  /* ---- DARK slide headline ---- */
+  .h1{ font-family:var(--font-display); font-weight:700; line-height:1.05; letter-spacing:-.035em; color:#F7F9FB; margin:0; }
+  .h1 .ac{ color:var(--blue); }
+  .lede-d{ font-size:19px; line-height:1.45; color:rgba(247,249,251,.84); margin-top:22px; max-width:880px; }
+
+  /* numbered steps */
+  .steps{ display:flex; flex-direction:column; gap:16px; margin-top:6px; }
+  .step{ display:grid; grid-template-columns:34px 1fr; gap:16px; align-items:start; }
+  .step .n{ width:30px; height:30px; border-radius:50%; background:var(--blue); color:#fff;
+    font-weight:700; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:var(--font-display); }
+  .step .t{ font-size:16px; font-weight:700; color:var(--navy); line-height:1.3; }
+  .step .d{ font-size:14px; color:var(--muted); line-height:1.45; margin-top:3px; }
+
+  /* cards */
+  .cards{ display:grid; gap:18px; margin-top:8px; }
+  .card{ background:#fff; border-radius:16px; padding:22px 24px; box-shadow:var(--shadow-card); border:1px solid var(--hairline); }
+  .card .ct{ font-size:16px; font-weight:700; color:var(--navy); margin-bottom:6px; }
+  .card .cd{ font-size:13.5px; color:var(--muted); line-height:1.5; }
+  .card .ci{ width:34px; height:34px; border-radius:9px; background:var(--ps-cyan-50); color:var(--blue);
+    display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; margin-bottom:12px; font-family:var(--font-display); }
+
+  /* screenshot frame */
+  .shot{ background:#fff; border-radius:14px; overflow:hidden; box-shadow:var(--shadow-hero); border:1px solid var(--hairline); }
+  .shot img{ width:100%; display:block; }
+  .cap{ font-size:11.5px; color:var(--muted); font-style:italic; margin-top:10px; line-height:1.4; }
+  .cap.dark{ color:rgba(247,249,251,.5); }
+  .pveye{ font-size:11px; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+
+  /* callout */
+  .callout{ background:rgba(0,27,91,.04); border-left:4px solid var(--blue); padding:14px 18px;
+    border-radius:0 8px 8px 0; font-size:14px; color:var(--navy); font-weight:600; line-height:1.5; }
+  .callout.warn{ background:rgba(255,106,47,.08); border-left-color:var(--orange); }
+
+  /* flow stepper */
+  .flow{ display:flex; align-items:stretch; gap:0; margin-top:30px; }
+  .fnode{ flex:1; background:#fff; border:1px solid var(--hairline); border-radius:14px; padding:18px 16px; text-align:center; box-shadow:var(--shadow-card); }
+  .fnode .fl{ font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--blue); }
+  .fnode .ft{ font-size:14.5px; font-weight:700; color:var(--navy); margin-top:8px; line-height:1.25; }
+  .fnode .fd{ font-size:11.5px; color:var(--muted); margin-top:5px; line-height:1.35; }
+  .farrow{ display:flex; align-items:center; color:var(--blue); font-size:22px; padding:0 8px; font-weight:700; }
+
+  /* pills */
+  .pill{ display:inline-flex; padding:4px 12px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; }
+  .pill.ok{ background:rgba(131,221,137,.18); color:#1F8458; }
+  .pill.fail{ background:rgba(240,96,96,.14); color:#C0392B; }
+  .pill.info{ background:var(--ps-cyan-50); color:var(--blue); }
+
+  /* comparison table */
+  .cmp{ width:100%; border-collapse:collapse; margin-top:8px; font-size:13px; }
+  .cmp th, .cmp td{ text-align:left; padding:11px 14px; vertical-align:top; line-height:1.4; }
+  .cmp thead th{ font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#fff; }
+  .cmp thead th:nth-child(1){ background:transparent; color:var(--muted); }
+  .cmp thead th:nth-child(2){ background:var(--blue); border-radius:8px 8px 0 0; }
+  .cmp thead th:nth-child(3){ background:var(--navy); border-radius:8px 8px 0 0; }
+  .cmp tbody td{ background:#fff; border-bottom:1px solid var(--hairline); color:var(--navy); }
+  .cmp tbody td:first-child{ background:transparent; font-weight:700; color:var(--navy); width:150px; }
+  .cmp tbody td .lbl{ color:var(--muted); }
+
+  /* data table */
+  .dtab{ width:100%; border-collapse:collapse; margin-top:14px; font-size:14px; background:#fff;
+    border-radius:12px; overflow:hidden; box-shadow:var(--shadow-card); }
+  .dtab th{ background:var(--navy); color:#fff; text-align:left; padding:13px 18px; font-size:12px; letter-spacing:.05em; text-transform:uppercase; }
+  .dtab td{ padding:14px 18px; border-bottom:1px solid var(--hairline); color:var(--navy); line-height:1.45; vertical-align:top; }
+  .dtab td b{ font-family:var(--font-display); }
+
+  .two{ display:grid; grid-template-columns:1fr 1fr; gap:30px; }
+  .mint{ color:#1F8458; font-weight:800; }
+</style>
+</head>
+<body>
+
+<!-- 01 TITLE -->
+<section class="slide">
+  <div class="bar dark" style="--p:5%"></div>
+  <img class="logo" src="assets/yaydoo-white.png" alt="Yaydoo by Paystand" style="height:48px">
+  <div style="position:absolute;inset:0;background:radial-gradient(circle at 84% 16%, rgba(16,163,232,.30), transparent 32%), radial-gradient(circle at 92% 90%, rgba(131,221,137,.14), transparent 30%)"></div>
+  <div class="body" style="display:flex;flex-direction:column;justify-content:center">
+    <div class="ey">Guía de uso · 2026</div>
+    <h1 class="h1" style="font-size:66px;max-width:1000px">Pagos con Oyster AP<br>desde <span class="ac">NetSuite</span></h1>
+    <p class="lede-d" style="font-size:20px;max-width:760px">Cómo ejecutar pagos a proveedores por SPEI directamente desde las Cuentas por Pagar de NetSuite, con dispersión y confirmación automática vía Oyster AP.</p>
+    <div style="display:flex;align-items:center;gap:44px;margin-top:52px">
+      <div>
+        <div style="font-size:10.5px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:rgba(247,249,251,.42)">Dirigido a</div>
+        <div style="font-size:17px;font-weight:700;color:#F7F9FB;margin-top:6px">Equipos de finanzas · Cuentas por Pagar</div>
+      </div>
+      <div style="width:1px;height:40px;background:rgba(255,255,255,.16)"></div>
+      <div>
+        <div style="font-size:10.5px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:rgba(247,249,251,.42)">Preparado por</div>
+        <div style="font-size:17px;font-weight:700;color:#F7F9FB;margin-top:6px">Yaydoo · Customer Success</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot dark"><span>Pagos con Oyster AP · NetSuite</span><span>Última actualización · Enero 2026</span><span>01</span></div>
+</section>
+
+<!-- 02 AGENDA -->
+<section class="slide light">
+  <div class="bar" style="--p:10%"></div>
+  <img class="logo" src="assets/yaydoo-dark.png" alt="Yaydoo by Paystand" style="height:42px">
+  <div class="body">
+    <div class="ey">Contenido</div>
+    <h2 class="h2">Lo que cubre esta <span class="ac">guía</span></h2>
+    <div class="two" style="margin-top:30px;gap:48px">
+      <div class="steps">
+        <div class="step"><div class="n">1</div><div><div class="t">Descripción general y documentos soportados</div></div></div>
+        <div class="step"><div class="n">2</div><div><div class="t">Acceso al módulo y configuración inicial</div></div></div>
+        <div class="step"><div class="n">3</div><div><div class="t">Generación y procesamiento del lote de pago</div></div></div>
+        <div class="step"><div class="n">4</div><div><div class="t">Ejecución del pago y fondeo en Oyster</div></div></div>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="n">5</div><div><div class="t">Confirmaciones, estados y conciliación</div></div></div>
+        <div class="step"><div class="n">6</div><div><div class="t">Campos del bundle y agrupación de pagos</div></div></div>
+        <div class="step"><div class="n">7</div><div><div class="t">Reverso vs. Rollback en NetSuite</div></div></div>
+        <div class="step"><div class="n">8</div><div><div class="t">Referencias estáticas por proveedor</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot light"><span>Pagos con Oyster AP · NetSuite</span><span>Yaydoo by Paystand</span><span>02</span></div>
+</section>
+
+<!-- 03 DESCRIPCION GENERAL -->
+<section class="slide light">
+  <div class="bar" style="--p:16%"></div>
+  <img class="logo" src="assets/yaydoo-dark.png" style="height:42px">
+  <div class="body">
+    <div class="ey">01 · Descripción general</div>
+    <h2 class="h2">Pagos SPEI a proveedores, <span class="ac">sin salir de NetSuite</span></h2>
+    <p class="lede">El Bundle Oyster AP ejecuta transferencias SPEI directamente desde los documentos de Cuentas por Pagar. Aprovecha el módulo nativo Electronic Bank Payments (EBP) de NetSuite y se integra con Oyster AP, que procesa la dispersión bancaria y devuelve confirmaciones automáticas al ERP.</p>
+    <div class="flow">
+      <div class="fnode"><div class="fl">NetSuite</div><div class="ft">Documentos AP</div><div class="fd">Facturas, gastos, diarios</div></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><div class="fl">EBP</div><div class="ft">Lote de pago</div><div class="fd">Aplicación e instrucciones</div></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><div class="fl">Oyster AP</div><div class="ft">Dispersión SPEI</div><div class="fd">Fondeo y ejecución</div></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><div class="fl">Banxico</div><div class="ft">Confirmación</div><div class="fd">CEP + estado en NetSuite</div></div>
+    </div>
+    <div class="callout" style="margin-top:28px">Resultado: <b>menos trabajo manual</b> y trazabilidad completa del pago, desde la factura hasta el comprobante SPEI.</div>
+  </div>
+  <div class="foot light"><span>Pagos con Oyster AP · NetSuite</span><span>Yaydoo by Paystand</span><span>03</span></div>
+</section>
+
+<!-- 04 DOCUMENTOS SOPORTADOS -->
+<section class="slide light">
+  <div class="bar" style="--p:22%"></div>
+  <img class="logo" src="assets/yaydoo-dark.png" style="height:42px">
+  <div class="body">
+    <div class="ey">01 · Descripción general</div>
+    <h2 class="h2">Documentos soportados</h2>
+    <div class="cards" style="grid-template-columns:repeat(4,1fr);margin-top:30px">
+      <div class="card"><div class="ci">▤</div><div class="ct">Facturas de proveedor</div><div class="cd">Vendor Bills — el caso de uso principal de pago a proveedores.</div></div>
+      <div class="card"><div class="ci">▦</div><div class="ct">Reportes de gastos</div><div class="cd">Expense Reports — reembolsos y gastos a colaboradores.</div></div>
+      <div class="card"><div class="ci">▧</div><div class="ct">Entradas de diario</div><div class="cd">Journal Entries — nómina, traspasos entre cuentas, pagos únicos o ajustes contables.</div></div>
+      <div class="card"><div class="ci">▥</div><div class="ct">Pagos anticipados</div><div class="cd">Prepayments — manejados con un flujo distinto al de EBP, mediante búsqueda guardada.</div></div>
+    </div>
+    <div class="callout info-bg" style="margin-top:30px;background:var(--ps-cyan-50);border-left-color:var(--blue)">Acceso al módulo: <b>Pagos → Procesamiento de pagos → Procesamiento de pago de factura</b>.</div>
+  </div>
+  <div class="foot light"><span>Pagos con Oyster AP · NetSuite</span><span>Yaydoo by Paystand</span><span>04</span></div>
+</section>
+
+<!-- 05 CONFIGURACION INICIAL -->
+<section class="slide light">
+  <div class="bar" style="--p:28%"></div>
+  <img class="logo" src="assets/yaydoo-dark.png" style="height:42px">
+  <div class="body">
+    <div class="ey">02 · Configuración inicial</div>
+    <h2 class="h2">Antes de generar pagos</h2>
+    <p class="lede">Estas cuentas se configuran durante la implementación. Si necesita asistencia, contacte a Soporte Yaydoo.</p>
+    <div class="two" style="margin-top:28px;align-items:start">
+      <div class="cards">
+        <div class="card"><div class="ct">Cuenta bancaria de impacto</div><div class="cd">La cuenta de NetSuite desde donde se dispersarán los fondos.</div></div>
+        <div class="card"><div class="ct">Cuenta de Cuentas por Pagar (AP)</div><div class="cd">La cuenta AP asociada a los documentos que se van a pagar.</div></div>
+      </div>
+      <div>
+        <div class="callout">Una vez seleccionadas <b>ambas cuentas</b>, NetSuite mostrará automáticamente la lista de documentos pendientes de pago que cumplen con esos criterios.</div>
+        <div class="callout info" style="margin-top:16px;background:var(--ps-cyan-50);border-left-color:var(--blue)">Para más detalle, consulte la <b>guía de configuración</b> o escriba a Soporte Yaydoo.</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot light"><span>Pagos con Oyster AP · NetSuite</span><span>Yaydoo by Paystand</span><span>05</span></div>
+</section>
+
+<!-- 06 GENERACION DEL LOTE -->
+<section class="slide light">
+  <div class="bar" style="--p:34%"></div>
+  <img class="logo" src="assets/yaydoo-dark.png" style="height:42px">
+  <div class="body">
+    <div class="ey">03 · Generación del lote</div>
+    <h2 class="h2">Crear el lote de pago</h2>
+    <div class="two" style="margin-top:22px;grid-template-columns:440px 1fr;gap:44px;align-items:start">
+      <div>
+        <div class="steps">
+          <div class="step"><div class="n">1</div><div><div class="t">Seleccione las cuentas</div><div class="d">Cuenta bancaria y cuenta de Cuentas por Pagar.</div></div></div>
+          <div class="step"><div class="n">2</div><div><div class="t">Revise los documentos</div><div class="d">Marque o desmarque casillas; ajuste el monto para pagos parciales y asigne una referencia al lote.</div></div></div>
+          <div class="step"><div class="n">3</div><div><div class="t">Presione Enviar</div><div class="d">Aplica los pagos en NetSuite y crea el lote de instrucciones para Oyster AP.</div></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="pveye">Pantalla en NetSuite</div>
+        <div class="shot"><img src="shots/p03_1.png" alt="EFT Bill Payments en NetSuite"></div>
+        <div class="cap">TEF: Pagos de factura — selección de cuentas y documentos pendientes.</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot light"><span>Pagos con Oyster AP · NetSuite</span><span>Yaydoo by Paystand</span><span>06</span></div>
+</section>
+
+<!-- 07 PROCESAMIENTO DEL LOTE -->
+<section class="slide light">
+  <div class="bar" style="--p:40%"></div>
+  <img class="logo" src="assets/yaydoo-dark.png" style="height:42px">
+  <div class="body">
+    <div class="ey">04 · Procesamiento del lote</div>
+    <h2 class="h2">El botón <span class="ac">"Pagar con Oyster AP"</span></h2>
+    <div class="two" style="margin-top:22px;grid-template-columns:1fr 430px;gap:44px;align-items:start">
+      <div>
+        <div class="pveye">Vista a nivel de lote de pago</div>
+        <div class="shot"><img src="shots/p04_1.png" alt="Payment File Administration"></div>
+        <div class="cap">Cuando el proceso interno finaliza, aparece el botón "Pagar con Oyster AP".</div>
+      </div>
+      <div>
+        <p class="lede" style="margin-top:30px">Su aparición indica que:</p>
+        <div class="steps" style="margin-top:10px">
+          <div class="step"><div class="n">✓</div><div><div class="t">Los pagos en NetSuite han sido aplicados</div></div></div>
+          <div class="step"><div class="n">✓</div><div><div class="t">El lote está listo para enviarse a Oyster</div></div></div>
+        </div>
+        <div class="callout" style="margin-top:22px">Al hacer clic, se envía el lote a Oyster AP y se genera una <b>liga (URL)</b> para proceder al pago en la plataforma.</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot light"><span>Pagos con Oyster AP · NetSuite</span><span>Yaydoo by Paystand</span><span>07</span></div>
+</section>
+
+<!-- 08 EJECUCION EN OYSTER -->
+<section class="slide light">
+  <div class="bar" style="--p:46%"></div>
+  <img class="logo" src="assets/yaydoo-dark.png" style="height:42px">
+  <div class="body">
+    <div class="ey">05 · Ejecución en Oyster</div>
+    <h2 class="h2">Revisar y confirmar los pagos</h2>
+    <div class="two" style="margin-top:22px;grid-template-columns:440px 1fr;gap:44px;align-items:start">
+      <div>
+        <div class="steps">
+          <div class="step"><div class="n">1</div><div><div class="t">Abra la liga</div><div class="d">Se redirige al flujo de pago en Oyster.</div></div></div>
+          <div class="step"><div class="n">2</div><div><div class="t">Revise pagos y montos</div><div class="d">Puede excluir pagos desmarcando casillas. Oyster recalcula el total y notifica a NetSuite para revertir los excluidos.</div></div></div>
+          <div class="step"><div class="n">3</div><div><div class="t">Confirme y continúe</div><div class="d">Las instrucciones quedan fijadas.</div></div></div>
+        </div>
+        <div class="callout warn" style="margin-top:18px">Si cancela desde Oyster, el lote en NetSuite <b>no se revierte automáticamente</b>: use la opción <b>Rollback</b> en el registro del lote.</div>
+      </div>
+      <div>
+        <div class="pveye">Flujo de pago en Oyster</div>
+        <div class="shot"><img src="shots/p05_2.png" alt="Flujo de pago en Oyster"></div>
+        <div class="cap">Los documentos revertidos regresan a estado "pendiente de pago".</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot light"><span>Pagos con Oyster AP · NetSuite</span><span>Yaydoo by Paystand</span><span>08</span></div>
+</section>
+
+<!-- 09 FONDEO -->
+<section class="slide light">
+  <div class="bar" style="--p:52%"></div>
+  <img class="logo" src="assets/yaydoo-dark.png" style="height:42px">
+  <div class="body">
+    <div class="ey">06 · Fondeo y ejecución del batch</div>
+    <h2 class="h2">Fondear el batch</h2>
+    <p class="lede">Oyster muestra las instrucciones de fondeo. El depósito debe realizarse <b>exactamente</b> conforme a ellas.</p>
+    <div class="cards" style="grid-template-columns:repeat(3,1fr);margin-top:28px">
+      <div class="card"><div class="ci">#</div><div class="ct">CLABE de depósito</div><div class="cd">Cuenta destino exacta donde se debe fondear.</div></div>
+      <div class="card"><div class="ci">↦</div><div class="ct">Referencia</div><div class="cd">Referencia única asignada al batch.</div></div>
+      <div class="card"><div class="ci">$</div><div class="ct">Monto exacto</div><div class="cd">El importe a transferir, sin variaciones.</div></div>
+    </div>
+    <div class="callout" style="margin-top:28px">Una vez recibido el fondeo correcto, <b>Oyster procesa los pagos de forma automática</b>.</div>
+  </div>
+  <div class="foot light"><span>Pagos con Oyster AP · NetSuite</span><span>Yaydoo by Paystand</span><span>09</span></div>
+</section>
+
+<!-- 10 CONFIRMACIONES Y ESTADOS -->
+<section class="slide light">
+  <div class="bar" style="--p:58%"></div>
+  <img class="logo" src="assets/yaydoo-dark.png" style="height:42px">
+  <div class="body">
+    <div class="ey">07 · Confirmaciones y estados</div>
+    <h2 class="h2">Qué pasa al completar el batch</h2>
+    <div class="two" style="margin-top:24px;align-items:start">
+      <div class="card" style="border-top:4px solid #83DD89">
+        <span class="pill ok">Pagos exitosos</span>
+        <div class="cd" style="margin-top:14px;font-size:14px;line-height:1.6">
+          • Se genera el comprobante SPEI y se obtiene el <b>CEP de Banxico</b>.<br>
+          • En NetSuite el registro se actualiza: estado <b class="mint">Pagado</b> + URL del CEP.<br>
+          • Oyster notifica por correo al proveedor: facturas pagadas, trazabilidad SPEI y PDF de remesa (si aplica).
+        </div>
+      </div>
+      <div class="card" style="border-top:4px solid #F06060">
+        <span class="pill fail">Pagos fallidos / excluidos</span>
+        <div class="cd" style="margin-top:14px;font-size:14px;line-height:1.6">
+          • Oyster realiza hasta <b>3 intentos</b>. Si todos fallan, se marca como <b>Fallido</b> en NetSuite.<br>
+          • Se ejecuta el reverso del pago y el documento vuelve a "pendiente de pago".<br>
+          • Si un pago fue excluido, se marca como "cancelado a petición del usuario" y se anula.
+        </div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:22px;font-size:13px">Cada estado se refleja automáticamente en el registro de pago de NetSuite, manteniendo trazabilidad completa.</div>
+  </div>
+  <div class="foot light"><span>Pagos con Oyster AP · NetSuite</span><span>Yaydoo by Paystand</span><span>10</span></div>
+</section>
+
+<!-- 11 NOTIFICACIONES Y CONCILIACION -->
+<section class="slide light">
+  <div class="bar" style="--p:64%"></div>
+  <img class="logo" src="assets/yaydoo-dark.png" style="height:42px">
+  <div class="body">
+    <div class="ey">07 · Conciliación</div>
+    <h2 class="h2">Notificaciones al proveedor</h2>
+    <div class="two" style="margin-top:22px;grid-template-columns:1fr 430px;gap:44px;align-items:start">
+      <div>
+        <div class="steps">
+          <div class="step"><div class="n">✉</div><div><div class="t">Correo al proveedor</div><div class="d">Oyster envía notificaciones al correo del proveedor registrado en NetSuite. Hoy se usa un correo por proveedor.</div></div></div>
+          <div class="step"><div class="n">▤</div><div><div class="t">PDF de Guía de conciliación</div><div class="d">Para pagos agrupados, incluye el desglose de facturas pagadas, facilitando la conciliación del proveedor.</div></div></div>
+        </div>
+        <div class="callout info" style="margin-top:20px;background:var(--ps-cyan-50);border-left-color:var(--blue)">Puede personalizar el <b>logo y estilo</b> de las notificaciones desde el dashboard de Oyster AP.</div>
+      </div>
+      <div>
+        <div class="pveye">Comprobante de dispersión</div>
+        <div class="shot" style="max-width:380px"><img src="shots/p10_1.png" alt="Comprobante / conciliación Oyster" style="max-height:400px;object-fit:cover;object-position:top"></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot light"><span>Pagos con Oyster AP · NetSuite</span><span>Yaydoo by Paystand</span><span>11</span></div>
+</section>
+
+<!-- 12 CAMPOS DEL BUNDLE -->
+<section class="slide light">
+  <div class="bar" style="--p:70%"></div>
+  <img class="logo" src="assets/yaydoo-dark.png" style="height:42px">
+  <div class="body">
+    <div class="ey">08 · Campos del bundle</div>
+    <h2 class="h2">Dos campos opcionales por documento</h2>
+    <p class="lede">El bundle agrega estos campos a nivel documento (factura, reporte de gastos, etc.).</p>
+    <table class="dtab">
+      <thead><tr><th style="width:230px">Campo</th><th style="width:340px">Descripción</th><th>Uso en SPEI</th></tr></thead>
+      <tbody>
+        <tr><td><b>Oyster AP Reference</b></td><td>7 dígitos numéricos.</td><td>Se usa como <b>referencia</b> SPEI.</td></tr>
+        <tr><td><b>Oyster AP Memo</b></td><td>Texto alfanumérico, hasta 40 caracteres, sin caracteres especiales.</td><td>Se usa como <b>concepto</b> SPEI.</td></tr>
+      </tbody>
+    </table>
+    <div class="callout" style="margin-top:24px">Si ambos campos se llenan, se usan en la instrucción SPEI. Si no, Oyster usa el <b>ID de factura</b> como concepto y genera la referencia automáticamente.</div>
+  </div>
+  <div class="foot light"><span>Pagos con Oyster AP · NetSuite</span><span>Yaydoo by Paystand</span><span>12</span></div>
+</section>
+
+<!-- 13 AGRUPACION -->
+<section class="slide light">
+  <div class="bar" style="--p:76%"></div>
+  <img class="logo" src="assets/yaydoo-dark.png" style="height:42px">
+  <div class="body">
+    <div class="ey">09 · Agrupación de pagos</div>
+    <h2 class="h2">Una sola operación SPEI por CLABE</h2>
+    <p class="lede">Cuando Oyster detecta múltiples pagos hacia la misma cuenta CLABE, puede agruparlos en una sola operación SPEI, si la configuración del cliente lo permite.</p>
+    <div class="cards" style="grid-template-columns:repeat(3,1fr);margin-top:28px">
+      <div class="card"><div class="ct">Misma referencia o memo</div><div class="cd">Los pagos deben compartir la misma referencia o concepto para poder agruparse.</div></div>
+      <div class="card"><div class="ct">Referencias distintas</div><div class="cd">Si las referencias varían, Oyster envía los pagos de manera individual.</div></div>
+      <div class="card"><div class="ct">Configuración</div><div class="cd">Para habilitar o modificar la agrupación, contacte a Soporte Yaydoo.</div></div>
+    </div>
+    <div class="callout info" style="margin-top:28px;background:var(--ps-cyan-50);border-left-color:var(--blue)">La agrupación reduce el número de transferencias y comisiones, manteniendo el desglose en la Guía de conciliación.</div>
+  </div>
+  <div class="foot light"><span>Pagos con Oyster AP · NetSuite</span><span>Yaydoo by Paystand</span><span>13</span></div>
+</section>
+
+<!-- 14 REVERSO VS ROLLBACK (dark) -->
+<section class="slide light">
+  <div class="bar" style="--p:82%"></div>
+  <img class="logo" src="assets/yaydoo-dark.png" style="height:42px">
+  <div class="body">
+    <div class="ey">10 · Reverso vs. Rollback</div>
+    <h2 class="h2">Dos formas de deshacer un pago</h2>
+    <table class="cmp">
+      <thead><tr><th></th><th>Reverso de pagos</th><th>Rollback de lote (EBP)</th></tr></thead>
+      <tbody>
+        <tr><td>Propósito</td><td>Anular un pago individual ya aplicado (p. ej. si falló o lo rechazó el banco).</td><td>Revertir todo un lote, regresando los documentos a su estado original.</td></tr>
+        <tr><td>Alcance</td><td>Nivel documento de pago (Vendor Payment, Journal Payment).</td><td>Nivel lote de pago (Payment Batch).</td></tr>
+        <tr><td>Resultado contable</td><td>Crea un asiento inverso; mantiene trazabilidad.</td><td>Elimina las transacciones del lote, sin asientos adicionales.</td></tr>
+        <tr><td>Quién lo ejecuta</td><td>Oyster (automático ante un fallo) o el usuario manualmente.</td><td>El usuario, desde la pantalla del lote EBP.</td></tr>
+        <tr><td>Uso típico</td><td>El pago se ejecutó pero falló o fue rechazado.</td><td>El lote se generó por error o se desea reenviar con cambios.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="foot light"><span>Pagos con Oyster AP · NetSuite</span><span>Yaydoo by Paystand</span><span>14</span></div>
+</section>
+
+<!-- 15 REFERENCIAS ESTATICAS -->
+<section class="slide light">
+  <div class="bar" style="--p:88%"></div>
+  <img class="logo" src="assets/yaydoo-dark.png" style="height:42px">
+  <div class="body">
+    <div class="ey">11 · Referencias estáticas por proveedor</div>
+    <h2 class="h2">Una referencia fija, <span class="ac">automática</span></h2>
+    <p class="lede">Define una referencia fija en el registro del proveedor en NetSuite, que se usa automáticamente en todos sus pagos SPEI. Se mapea al campo Oyster AP Memo y viaja en el "Concepto del pago".</p>
+    <div class="flow" style="margin-top:24px">
+      <div class="fnode"><div class="fl">Paso 1</div><div class="ft">Registrar referencia</div><div class="fd">En el tab Oyster AP del proveedor</div></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><div class="fl">Paso 2</div><div class="ft">Mapeo automático</div><div class="fd">Al campo Oyster AP Memo del documento</div></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><div class="fl">Paso 3</div><div class="ft">Incluida en el lote</div><div class="fd">Cada instrucción de pago la lleva</div></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><div class="fl">Paso 4</div><div class="ft">Concepto SPEI</div><div class="fd">El proveedor concilia fácilmente</div></div>
+    </div>
+    <div class="callout" style="margin-top:26px"><b>Ejemplo:</b> el proveedor pide el concepto "Pago Proveedor ABC – Cliente 123". Se registra una sola vez y todas sus facturas lo incluyen automáticamente, sin captura manual.</div>
+  </div>
+  <div class="foot light"><span>Pagos con Oyster AP · NetSuite</span><span>Yaydoo by Paystand</span><span>15</span></div>
+</section>
+
+<!-- 16 CONSIDERACIONES / BUENAS PRACTICAS -->
+<section class="slide light">
+  <div class="bar" style="--p:94%"></div>
+  <img class="logo" src="assets/yaydoo-dark.png" style="height:42px">
+  <div class="body">
+    <div class="ey">11 · Consideraciones</div>
+    <h2 class="h2">Buenas prácticas</h2>
+    <div class="two" style="margin-top:24px;align-items:start">
+      <div class="cards">
+        <div class="card"><div class="ct">Múltiples referencias por proveedor</div><div class="cd">Si un proveedor requiere más de una referencia (por unidad de negocio, contrato o sucursal), cree registros de proveedor separados, cada uno con su referencia.</div></div>
+        <div class="card"><div class="ct">Identificación clara</div><div class="cd">Evite nombres idénticos. Incluya un identificador, p. ej. "Proveedor ABC – Ref Contrato A" / "Ref Contrato B".</div></div>
+      </div>
+      <div class="cards">
+        <div class="card"><div class="ct">Relación con otros campos</div><div class="cd">Si existe referencia estática a nivel proveedor, se usa como Oyster AP Memo automáticamente. Oyster AP Reference sigue siendo opcional e independiente.</div></div>
+        <div class="card" style="background:var(--navy);color:#fff">
+          <div class="ct" style="color:#fff">En resumen</div>
+          <div class="cd" style="color:rgba(255,255,255,.82)">Automatiza referencias fijas, reduce trabajo manual y errores, y asegura consistencia en el Concepto SPEI.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot light"><span>Pagos con Oyster AP · NetSuite</span><span>Yaydoo by Paystand</span><span>16</span></div>
+</section>
+
+<!-- 17 CLOSING -->
+<section class="slide">
+  <div class="bar dark" style="--p:100%"></div>
+  <img class="logo" src="assets/yaydoo-white.png" style="height:48px">
+  <div style="position:absolute;inset:0;background:radial-gradient(circle at 18% 80%, rgba(16,163,232,.26), transparent 34%), radial-gradient(circle at 88% 14%, rgba(131,221,137,.14), transparent 30%)"></div>
+  <div class="body" style="display:flex;flex-direction:column;justify-content:center">
+    <div class="ey">Gracias</div>
+    <h1 class="h1" style="font-size:52px;max-width:920px">Pagos a proveedores <span class="ac">más simples</span> y trazables</h1>
+    <p class="lede-d" style="max-width:760px">Del documento en NetSuite al comprobante SPEI, con confirmación automática y conciliación lista para el proveedor.</p>
+    <div style="margin-top:48px">
+      <div style="font-size:10.5px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:rgba(247,249,251,.42)">¿Necesita ayuda?</div>
+      <div style="font-size:20px;font-weight:700;color:#F7F9FB;margin-top:8px">Soporte Yaydoo · Customer Success</div>
+      <div style="font-size:15px;color:rgba(247,249,251,.7);margin-top:4px">Consulte la guía de configuración o contacte a su equipo de soporte.</div>
+    </div>
+  </div>
+  <div class="foot dark"><span>Pagos con Oyster AP · NetSuite</span><span>Yaydoo by Paystand</span><span>17</span></div>
+</section>
+
+</body></html>
